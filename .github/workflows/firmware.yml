@@ -30,7 +30,7 @@ jobs:
           sudo apt-get install --no-install-recommends -y ninja-build cmake python3-venv libudev-dev pkg-config
 
       - name: Install Rust for ESP32-S3
-        uses: esp-rs/xtensa-toolchain@v1
+        uses: esp-rs/xtensa-toolchain@v1.7.0
         with:
           buildtargets: esp32s3
           ldproxy: true
