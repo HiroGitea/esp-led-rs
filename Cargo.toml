@@ -1,0 +1,32 @@
+[package]
+name = "led-controller"
+version = "0.1.0"
+edition = "2021"
+resolver = "2"
+rust-version = "1.82"
+
+[[bin]]
+name = "led-controller"
+harness = false
+
+[profile.release]
+opt-level = "s"
+
+[profile.dev]
+debug = true
+opt-level = "z"
+
+[dependencies]
+log = "0.4"
+anyhow = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+esp-idf-svc = { version = "0.53", features = ["critical-section"] }
+embedded-svc = "0.29"
+
+[build-dependencies]
+embuild = "0.33.5"
+
+# mDNS: 让板子可以通过 http://<hostname>.local 访问
+[[package.metadata.esp-idf-sys.extra_components]]
+remote_component = { name = "espressif/mdns", version = "1.8" }

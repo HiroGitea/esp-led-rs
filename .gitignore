@@ -1,0 +1,17 @@
+/target
+/dist
+/.embuild
+sdkconfig
+sdkconfig.old
+espflash_ports.toml
+*.bin
+
+# ESP-IDF 组件管理器生成
+/managed_components
+/dependencies.lock
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+*.swp
+.DS_Store

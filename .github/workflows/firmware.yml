@@ -1,0 +1,52 @@
+name: Build firmware
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: firmware-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: ESP32-S3 firmware
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      CARGO_TERM_COLOR: always
+      ESPFLASH_SKIP_UPDATE_CHECK: "true"
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y ninja-build cmake python3-venv libudev-dev pkg-config
+
+      - name: Install Rust for ESP32-S3
+        uses: esp-rs/xtensa-toolchain@v1
+        with:
+          buildtargets: esp32s3
+          ldproxy: true
+
+      - name: Install espflash
+        uses: taiki-e/install-action@v2
+        with:
+          tool: espflash@4.6.0
+
+      - name: Build and package firmware
+        run: bash scripts/build-firmware.sh
+
+      - name: Upload firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: led-controller-esp32s3-${{ github.sha }}
+          path: dist/
+          if-no-files-found: error
+          retention-days: 30
